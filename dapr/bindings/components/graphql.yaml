@@ -1,0 +1,12 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: graphql
+spec:
+  type: bindings.graphql
+  version: v1
+  metadata:
+    - name: endpoint
+      value: http://localhost:7000/query
+    - name: header:Cache-Control
+      value: no-cache

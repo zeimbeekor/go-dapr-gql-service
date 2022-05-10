@@ -2,17 +2,29 @@
 
 GraphQL servers in golang
 
+## Pre-requisites
+
+- [Latest version of Go](https://go.dev/dl/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Dapr CLI and initialized environment](https://docs.dapr.io/getting-started)
+
 ## Quick start
 
 Follow the steps below to use this service
 
-1. Prepare Data
+1. Copy dapr bindings spec files
+
+      cp ./dapr/bindings/components/jsonbinding.yaml $HOME/.dapr/components/jsonbinding.yaml
+      cp ./dapr/bindings/components/graphql.yaml $HOME/.dapr/components/graphql.yaml
+
+
+2. Prepare Data
 
        curl --location --request POST 'http://localhost:7000/query' \
        --header 'Content-Type: application/json' \
        --data-raw '{"query":"mutation {\n  createPosts {\n    id\n  }\n  createComments {\n    id\n  }\n  createUsers {\n    id\n  }\n}","variables":{}}'
 
-2. Start the graphql server
+3. Run the API Graphql service alongside a Dapr sidecar
 
        make run
 
