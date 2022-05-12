@@ -91,7 +91,6 @@ func (r *mutationResolver) CreateTodo(ctx context.Context) ([]*model.Todo, error
 // Get posts
 func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 	fmt.Println("Get posts...")
-	fmt.Println(len(r.posts))
 	if len(r.posts) > 0 {
 		return r.posts, nil
 	} else {

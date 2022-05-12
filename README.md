@@ -23,18 +23,18 @@ $ cp ./dapr/bindings/components/jsonbinding.yaml $HOME/.dapr/components/jsonbind
 $ cp ./dapr/bindings/components/graphql.yaml $HOME/.dapr/components/graphql.yaml
 ```
 
-2. Prepare Data
+2. Run the API Graphql service alongside a Dapr sidecar
+
+```console
+$ make run
+```
+
+3. Prepare Data
 
 ```console
 $ curl --location --request POST 'http://localhost:7000/query' \
 --header 'Content-Type: application/json' \
 --data-raw '{"query":"mutation {\n  createTodo {\n    id\n  }\n}","variables":{}}'
-```
-
-3. Run the API Graphql service alongside a Dapr sidecar
-
-```console
-$ make run
 ```
 
 More help to get started [gqlgen](https://github.com/99designs/gqlgen)
