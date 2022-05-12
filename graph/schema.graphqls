@@ -3,9 +3,10 @@
 # https://gqlgen.com/getting-started/
 
 type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
+  id: Int!
+  title: String!
+  completed: Boolean!
+  userId: Int!
   user: User!
 }
 
@@ -17,6 +18,7 @@ type Post {
   type: String!
   userId: Int!
   createdAt: String!
+  comments: [Comment]
 }
 
 type Comment {
@@ -57,6 +59,7 @@ type User {
   createdAt: String!
   address: Address!
   company: Company!
+  posts: [Post]
 }
 
 type Query {
@@ -64,16 +67,14 @@ type Query {
   comments: [Comment!]!
   todos: [Todo!]!
   users: [User!]!
-}
-
-input NewTodo {
-  text: String!
-  userId: String!
+  user(id: Int!): User!
+  post(id: Int!): Post!
+  comment(id: Int!): Comment!
+  getInfoByUserId(id: Int!): User!
+  getPostsByUserId(id: Int!, postType: String!): [Post!]!
+  getCommentsByPostId(id: Int!): [Comment!]!
 }
 
 type Mutation {
-  createPosts: [Post!]!
-  createComments: [Comment!]!
-  createTodo(input: NewTodo!): Todo!
-  createUsers: [User!]!
+  createTodo: [Todo!]!
 }

@@ -30,26 +30,23 @@ type Geo struct {
 	Lng string `json:"lng"`
 }
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
-}
-
 type Post struct {
-	ID        int    `json:"id"`
-	Title     string `json:"title"`
-	Body      string `json:"body"`
-	URL       string `json:"url"`
-	Type      string `json:"type"`
-	UserID    int    `json:"userId"`
-	CreatedAt string `json:"createdAt"`
+	ID        int        `json:"id"`
+	Title     string     `json:"title"`
+	Body      string     `json:"body"`
+	URL       string     `json:"url"`
+	Type      string     `json:"type"`
+	UserID    int        `json:"userId"`
+	CreatedAt string     `json:"createdAt"`
+	Comments  []*Comment `json:"comments"`
 }
 
 type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
+	UserID    int    `json:"userId"`
+	User      *User  `json:"user"`
 }
 
 type User struct {
@@ -62,4 +59,5 @@ type User struct {
 	CreatedAt string   `json:"createdAt"`
 	Address   *Address `json:"address"`
 	Company   *Company `json:"company"`
+	Posts     []*Post  `json:"posts"`
 }

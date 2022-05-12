@@ -1,0 +1,425 @@
+{
+	"info": {
+		"_postman_id": "157142de-9354-47d4-9ddd-72276fd55d74",
+		"name": "Urth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "graphql",
+			"item": [
+				{
+					"name": "querys",
+					"item": [
+						{
+							"name": "Get Posts",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n    posts {\n        id\n        title\n        body\n        url\n        type\n        userId\n        createdAt\n    }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Comments",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  comments {\n    id\n    name\n    email\n    body\n    postId\n    createdAt\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Users",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  users {\n    id\n    name\n    username\n    email\n    photo\n    website\n    address {\n      street\n      suite\n      city\n      zipcode\n      geo {\n        lat\n        lng\n      }\n    }\n    company {\n      name\n      catchPhrase\n      bs\n    }\n    createdAt\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Todo",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  todos {\n      id\n      title\n      completed\n      user {\n        id\n        name\n        username\n        email\n        photo\n        website\n        address {\n            street\n            suite\n            city\n            zipcode\n            geo {\n                lat\n                lng\n            }\n        }\n        company {\n            name\n            catchPhrase\n            bs\n        }\n        createdAt\n        posts {\n            id\n            title\n            body\n            url\n            type\n            userId\n            createdAt\n            comments {\n                id\n                name\n                email\n                body\n                postId\n                createdAt\n            }\n        }\n    }\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  user (id: 1) {\n    id\n    name\n    username\n    email\n    photo\n    website\n    address {\n      street\n      suite\n      city\n      zipcode\n      geo {\n        lat\n        lng\n      }\n    }\n    company {\n      name\n      catchPhrase\n      bs\n    }\n    createdAt\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  post (id: 1) {\n    id\n    title\n    body\n    url\n    type\n    userId\n    createdAt\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Comment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  comment (id: 1) {\n    id\n    name\n    email\n    body\n    postId\n    createdAt\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Posts By User ID",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  getPostsByUserId (id: 1, postType: \"\") {\n    id\n    title\n    body\n    url\n    type\n    userId\n    createdAt\n    comments {\n        id\n        name\n        email\n        body\n        postId\n        createdAt\n    }\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Comments By Post ID",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\n  getCommentsByPostId (id: 1) {\n    id\n    name\n    email\n    body\n    postId\n    createdAt\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "mutation",
+					"item": [
+						{
+							"name": "Generate Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation {\n  createTodo {\n    id\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "http://localhost:7000/query",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "7000",
+									"path": [
+										"query"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "bindings",
+			"item": [
+				{
+					"name": "bindings-graphql (get posts)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"operation\": \"query\",\n    \"metadata\": {\n        \"query\": \"query { posts { id title body url type userId createdAt } }\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3500/v1.0/bindings/graphql",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3500",
+							"path": [
+								"v1.0",
+								"bindings",
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bindings-jsonbinding",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "dapr-app-id",
+								"value": "gql",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"operation\": \"get\",\n    \"metadata\": {\n        \"path\": \"/todos/1\",\n        \"Content-Type\": \"application/json; charset=utf-8\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3500/v1.0/bindings/jsonbinding",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3500",
+							"path": [
+								"v1.0",
+								"bindings",
+								"jsonbinding"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "dapr-graphql",
+			"item": [
+				{
+					"name": "dapr-gql (getPosts)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"graphql\",\n    \"operation\": \"query\",\n    \"metadata\": {\n        \"query\": \"query { posts { id title body } }\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:7000/dapr-gql",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "7000",
+							"path": [
+								"dapr-gql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "frontend",
+			"item": [
+				{
+					"name": "bindings-gql (fe-getPostsByUserId)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"operation\": \"query\",\n    \"metadata\": {\n        \"query\": \"query {\\n        getPostsByUserId (id: 1, postType: \\\"\\\") {\\n            id\\n            title\\n            body\\n            url\\n            type\\n            userId\\n            createdAt\\n            comments {\\n                id\\n                name\\n                email\\n                body\\n                postId\\n                createdAt\\n            }\\n        }\\n    }\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/graphql",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

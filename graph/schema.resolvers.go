@@ -6,123 +6,211 @@ package graph
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"math/rand"
-	"time"
 
+	"github.com/ledongthuc/goterators"
 	"github.com/zeimbeekor/go-dapr-gql-service/graph/generated"
 	"github.com/zeimbeekor/go-dapr-gql-service/graph/model"
 	"github.com/zeimbeekor/go-dapr-gql-service/internal/utils"
 )
 
-func (r *mutationResolver) CreatePosts(ctx context.Context) ([]*model.Post, error) {
-	var err error
+// Create todo
+func (r *mutationResolver) CreateTodo(ctx context.Context) ([]*model.Todo, error) {
+	var (
+		url       string
+		err       error
+		mTodos    = []*model.Todo{}
+		mPosts    = []*model.Post{}
+		mComments = []*model.Comment{}
+		mUsers    = []*model.User{}
+	)
 
-	fmt.Println("... Create Posts ...")
-
-	if body, url, err := utils.Request("posts"); err == nil {
-		mPosts := []*model.Post{}
-		json.Unmarshal(body, &mPosts)
-		for _, v := range mPosts {
-			n := rand.Int() % len(utils.PostType)
-			createdAt := time.Now().UTC()
-			post := &model.Post{
-				ID:        v.ID,
-				Title:     v.Title,
-				Body:      v.Body,
-				URL:       fmt.Sprintf("%s/%d", url, v.ID),
-				Type:      utils.PostType[n],
-				UserID:    v.UserID,
-				CreatedAt: createdAt.Format(time.RFC3339Nano),
-			}
-			r.posts = append(r.posts, post)
-		}
-		return r.posts, nil
+	fmt.Println("Downloading todos metadata...")
+	if body, _, err := utils.Request("todos"); err == nil {
+		json.Unmarshal(body, &mTodos)
 	}
-	return nil, err
-}
 
-func (r *mutationResolver) CreateComments(ctx context.Context) ([]*model.Comment, error) {
-	var err error
-
-	fmt.Println("... Create Comments ...")
-
-	if body, _, err := utils.Request("comments"); err == nil {
-		mComments := []*model.Comment{}
-		json.Unmarshal(body, &mComments)
-		for _, v := range mComments {
-			createdAt := time.Now().UTC()
-			comment := &model.Comment{
-				ID:        v.ID,
-				Name:      v.Name,
-				Email:     v.Email,
-				Body:      v.Body,
-				PostID:    v.PostID,
-				CreatedAt: createdAt.Format(time.RFC3339Nano),
-			}
-			r.comments = append(r.comments, comment)
-		}
-		return r.comments, nil
-	}
-	return nil, err
-}
-
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *mutationResolver) CreateUsers(ctx context.Context) ([]*model.User, error) {
-	var err error
-
-	fmt.Println("... Create Users ...")
-
+	fmt.Println("Downloading users metadata...")
 	if body, _, err := utils.Request("users"); err == nil {
-		mUsers := []*model.User{}
 		json.Unmarshal(body, &mUsers)
-		for _, v := range mUsers {
-			createdAt := time.Now().UTC()
-			user := &model.User{
-				ID:        v.ID,
-				Name:      v.Name,
-				Username:  v.Username,
-				Email:     v.Email,
-				Photo:     v.Photo,
-				Website:   v.Website,
-				Address:   v.Address,
-				Company:   v.Company,
-				CreatedAt: createdAt.Format(time.RFC3339Nano),
-			}
-			r.users = append(r.users, user)
-		}
-		return r.users, nil
 	}
-	return nil, err
-}
 
-func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
-	fmt.Println("... Get Posts ...")
-	return r.posts, nil
-}
+	fmt.Println("Downloading posts metadata...")
+	if body, u, err := utils.Request("posts"); err == nil {
+		url = u
+		json.Unmarshal(body, &mPosts)
+	}
 
-func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
-	fmt.Println("... Get Comments ...")
-	return r.comments, nil
-}
+	fmt.Println("Downloading comments metadata...")
+	if body, _, err := utils.Request("comments"); err == nil {
+		json.Unmarshal(body, &mComments)
+	}
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	fmt.Println("... Get Todos ...")
+	fmt.Println("Create comments...")
+	for _, comment := range mComments {
+		utils.SetComment(comment)
+		r.comments = append(r.comments, comment)
+	}
+
+	fmt.Println("Create posts...")
+	for _, post := range mPosts {
+		utils.SetPost(post, url)
+		filteredItems := goterators.Filter(r.comments, func(item *model.Comment) bool {
+			return item.PostID == post.ID
+		})
+		utils.AddCommentsPost(post, filteredItems)
+		r.posts = append(r.posts, post)
+	}
+
+	fmt.Println("Create users...")
+	for _, user := range mUsers {
+		utils.SetUser(user)
+		filteredItems := goterators.Filter(r.posts, func(item *model.Post) bool {
+			return item.UserID == user.ID
+		})
+		utils.AddPostsUser(user, filteredItems)
+		r.users = append(r.users, user)
+	}
+
+	fmt.Println("Create todos...")
+	for _, todo := range mTodos {
+		filteredItems := goterators.Filter(r.users, func(item *model.User) bool {
+			return item.ID == todo.UserID
+		})
+		todo := utils.SetTodo(todo, filteredItems[0])
+		r.todos = append(r.todos, todo)
+	}
+
+	if err != nil {
+		return nil, err
+	}
 	return r.todos, nil
 }
 
-func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	fmt.Println("... Get Users ...")
-	return r.users, nil
+// Get posts
+func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
+	fmt.Println("Get posts...")
+	fmt.Println(len(r.posts))
+	if len(r.posts) > 0 {
+		return r.posts, nil
+	} else {
+		return nil, errors.New("posts not found")
+	}
 }
 
-// Mutation returns generated.MutationResolver implementation.
+// Get comments
+func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
+	fmt.Println("Get comments...")
+	if len(r.comments) > 0 {
+		return r.comments, nil
+	} else {
+		return nil, errors.New("comments not found")
+	}
+}
+
+// Get todos
+func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+	fmt.Println("Get todos...")
+	if len(r.todos) > 0 {
+		return r.todos, nil
+	} else {
+		return nil, errors.New("todos not found")
+	}
+}
+
+// Get users
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	fmt.Println("Get users...")
+	if len(r.users) > 0 {
+		return r.users, nil
+	} else {
+		return nil, errors.New("users not found")
+	}
+}
+
+// Get user
+func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
+	fmt.Println("Get user...")
+	filteredItems := goterators.Filter(r.users, func(item *model.User) bool {
+		return item.ID == id
+	})
+	if len(filteredItems) > 0 {
+		return filteredItems[0], nil
+	} else {
+		return nil, errors.New("user not found")
+	}
+}
+
+// Get post
+func (r *queryResolver) Post(ctx context.Context, id int) (*model.Post, error) {
+	fmt.Println("Get post...")
+	filteredItems := goterators.Filter(r.posts, func(item *model.Post) bool {
+		return item.ID == id
+	})
+	if len(filteredItems) > 0 {
+		return filteredItems[0], nil
+	} else {
+		return nil, errors.New("post not found")
+	}
+}
+
+// Get comment
+func (r *queryResolver) Comment(ctx context.Context, id int) (*model.Comment, error) {
+	fmt.Println("Get comment...")
+	filteredItems := goterators.Filter(r.comments, func(item *model.Comment) bool {
+		return item.ID == id
+	})
+	if len(filteredItems) > 0 {
+		return filteredItems[0], nil
+	} else {
+		return nil, errors.New("comment not found")
+	}
+}
+
+// Get information the user by id
+func (r *queryResolver) GetInfoByUserID(ctx context.Context, id int) (*model.User, error) {
+	fmt.Println("Get information the user by id...")
+	filteredItems := goterators.Filter(r.users, func(item *model.User) bool {
+		return item.ID == id
+	})
+	if len(filteredItems) > 0 {
+		return filteredItems[0], nil
+	} else {
+		return nil, errors.New("user not found")
+	}
+}
+
+// Get all posts by user id
+func (r *queryResolver) GetPostsByUserID(ctx context.Context, id int, postType string) ([]*model.Post, error) {
+	fmt.Println("Get all posts by user id...")
+	filteredItems := goterators.Filter(r.posts, func(item *model.Post) bool {
+		return (item.Type == postType || postType == "") && item.UserID == id
+	})
+	if len(filteredItems) > 0 {
+		return filteredItems, nil
+	} else {
+		return nil, errors.New("we did not find posts for the user")
+	}
+}
+
+// Get all comments by post id
+func (r *queryResolver) GetCommentsByPostID(ctx context.Context, id int) ([]*model.Comment, error) {
+	fmt.Println("Get all comments by post id...")
+	filteredItems := goterators.Filter(r.comments, func(item *model.Comment) bool {
+		return item.PostID == id
+	})
+	if len(filteredItems) > 0 {
+		return filteredItems, nil
+	} else {
+		return nil, errors.New("we did not find comments for the post")
+	}
+}
+
+// Mutation returns generated.MutationResolver implementation
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
-// Query returns generated.QueryResolver implementation.
+// Query returns generated.QueryResolver implementation
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }

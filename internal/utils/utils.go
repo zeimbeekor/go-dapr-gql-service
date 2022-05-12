@@ -9,6 +9,8 @@ import (
 	"time"
 	"strconv"
 	"net/http"
+
+	"github.com/zeimbeekor/go-dapr-gql-service/graph/model"
 )
 
 const (
@@ -26,6 +28,7 @@ const (
 var client = &http.Client{}
 var PostType = []string{"story", "job", "poll"}
 
+// Generic request
 func Request(path string) ([]byte, string, error) {
 	var (
 		url       string
@@ -67,3 +70,60 @@ func Request(path string) ([]byte, string, error) {
 	}
 	return nil, "", err
 }
+
+// Set todo
+func SetTodo(todo *model.Todo, user *model.User) *model.Todo {
+	m := &model.Todo{
+		ID:        todo.ID,
+		Title:     todo.Title,
+		Completed: todo.Completed,
+		User:      user,
+	}
+	return m
+}
+
+// Set user
+func SetUser(user *model.User) {
+	createdAt := time.Now().UTC()
+	url := fmt.Sprintf("%s%s", "https://i.pravatar.cc/100?u=", user.Email)
+	user.Photo = url
+	user.CreatedAt = createdAt.Format(time.RFC3339Nano)
+}
+
+// Add posts user
+func AddPostsUser(user *model.User, posts []*model.Post) {
+	user.Posts = posts
+}
+
+// Set post
+func SetPost(post *model.Post, url string) {
+	createdAt := time.Now().UTC()
+	n := rand.Int() % len(PostType)
+	post.URL = fmt.Sprintf("%s/%d", url, post.ID)
+	post.Type = PostType[n]
+	post.CreatedAt = createdAt.Format(time.RFC3339Nano)
+}
+
+// Add comments post
+func AddCommentsPost(post *model.Post, comments []*model.Comment) {
+	post.Comments = comments
+}
+
+// Set comment
+func SetComment(comment *model.Comment) {
+	createdAt := time.Now().UTC()
+	comment.CreatedAt = createdAt.Format(time.RFC3339Nano)
+}
+
+// Generic slice filter
+func Filter(data []map[string]interface{}, f filterFunc) []map[string]interface{} {
+	filtered := []map[string]interface{}{}
+	for _, d := range data {
+		if f(d) {
+			filtered = append(filtered, d)
+		}
+	}
+	return filtered
+}
+
+type filterFunc func(d map[string]interface{}) bool
