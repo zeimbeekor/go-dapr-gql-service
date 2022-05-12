@@ -27,23 +27,23 @@ func (r *mutationResolver) CreateTodo(ctx context.Context) ([]*model.Todo, error
 	)
 
 	fmt.Println("Downloading todos metadata...")
-	if body, _, err := utils.Request("todos"); err == nil {
+	if body, _, err := utils.GenericRequest("todos"); err == nil {
 		json.Unmarshal(body, &mTodos)
 	}
 
 	fmt.Println("Downloading users metadata...")
-	if body, _, err := utils.Request("users"); err == nil {
+	if body, _, err := utils.GenericRequest("users"); err == nil {
 		json.Unmarshal(body, &mUsers)
 	}
 
 	fmt.Println("Downloading posts metadata...")
-	if body, u, err := utils.Request("posts"); err == nil {
+	if body, u, err := utils.GenericRequest("posts"); err == nil {
 		url = u
 		json.Unmarshal(body, &mPosts)
 	}
 
 	fmt.Println("Downloading comments metadata...")
-	if body, _, err := utils.Request("comments"); err == nil {
+	if body, _, err := utils.GenericRequest("comments"); err == nil {
 		json.Unmarshal(body, &mComments)
 	}
 

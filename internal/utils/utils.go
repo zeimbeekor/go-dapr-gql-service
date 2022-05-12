@@ -29,7 +29,7 @@ var client = &http.Client{}
 var PostType = []string{"story", "job", "poll"}
 
 // Generic request
-func Request(path string) ([]byte, string, error) {
+func GenericRequest(path string) ([]byte, string, error) {
 	var (
 		url       string
 		err       error
